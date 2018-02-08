@@ -20,6 +20,12 @@ selectedTab = 0
 
 #Declare the lists
 tabs = [["Create", 100, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["About", 300, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel']]
+folders = ["Saves"]
+
+#Setup Folders
+for folder in folders:
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
 #Setup Pygame
 os.environ['SDL_VIDEO_CENTERED'] = '1'
