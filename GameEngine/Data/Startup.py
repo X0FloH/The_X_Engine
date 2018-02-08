@@ -33,6 +33,11 @@ pygame.init()
 pygame.display.set_caption("X Engine Launcher 0.5")
 display = pygame.display.set_mode(displaySize)
 
+#To not worry about sleep
+def wait(time):
+    sleep(time)
+    return
+
 #Main Loop
 while running:
     #Quit stuff
@@ -69,12 +74,13 @@ while running:
             renderRect((255, 255, 255), (tab[1], tab[2] + 40), (tab[3], 3), display)
 
     if selectedTab == 0:
-        renderText((255, 255, 255), 'Ariel', (200, 150), 50, 'Games', display)
+        renderText((255, 255, 255), 'Ariel', (100, 150), 50, 'Your Games', display)
         games = displayGames()
         i = 1
         while i-1 < len(games):
-             renderRect((255, 0, 0), (i * 120, 300), (100, 100), display)
-             i = i + 1
+            renderRect((255, 0, 0), (i * 190, 200), (150, 200), display)
+            renderText((71, 212, 100), 'Ariel', (i * 190, 420), 35, games[i-1], display)
+            i = i + 1
     
     pygame.display.update()
 
