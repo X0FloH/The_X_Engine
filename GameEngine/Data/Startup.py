@@ -78,8 +78,8 @@ while running:
         games = displayGames()
         i = 1
         while i-1 < len(games):
-            renderRect((255, 0, 0), (i * 190, 200), (150, 200), display)
-            renderText((71, 212, 100), 'Ariel', (i * 190, 420), 35, games[i-1], display)
+            renderRect((255, 0, 0), ((i * 190)-100, 200), (150, 200), display)
+            renderText((71, 212, 100), 'Ariel', ((i * 190)-100, 420), 35, games[i-1], display)
             i = i + 1
     
     pygame.display.update()
