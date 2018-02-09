@@ -19,7 +19,7 @@ running = True
 selectedTab = 0
 
 #Declare the lists
-tabs = [["Create", 100, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["About", 300, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel']]
+tabs = [["Open", 100, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["About", 300, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["Create", 500, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel']]
 folders = ["Saves"]
 
 #Setup Folders
@@ -83,6 +83,9 @@ while running:
             i = i + 1
     
     pygame.display.update()
+
+#To open a seperate file
+#os.system('start cmd /D /C "python Test.py && pause"')
 
 #Quit
 pygame.quit()
