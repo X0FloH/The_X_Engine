@@ -15,8 +15,11 @@ mouseRightDown = False
 mouseClicked = False
 mouseHasClicked = False
 running = True
+currentInput = ""
 
 selectedTab = 0
+selectedGame = -1
+oldGame = -1
 
 #Declare the lists
 tabs = [["Open", 100, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["About", 300, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["Create", 500, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel']]
@@ -41,7 +44,8 @@ def wait(time):
 #Main Loop
 while running:
     #Quit stuff
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
             break
@@ -78,9 +82,30 @@ while running:
         games = displayGames()
         i = 1
         while i-1 < len(games):
-            renderRect((255, 0, 0), ((i * 190)-100, 200), (150, 200), display)
-            renderText((71, 212, 100), 'Ariel', ((i * 190)-100, 420), 35, games[i-1], display)
+            if not selectedGame == i-1:
+                renderRect((255, 0, 0), ((i * 190)-100, 200), (150, 200), display)
+                renderText((71, 212, 100), 'Ariel', ((i * 190)-100, 420), 35, games[i-1], display)
+            else:
+                renderRect((255, 50, 0), ((i * 190)-100, 200), (150, 200), display)
+                renderText((94, 255, 34), 'Ariel', ((i * 190)-100, 420), 35, games[i-1], display)
+
+            if clickedRect(mousePos[0], mousePos[1], mouseClicked, (i *190)-100, 200, 150, 200):
+                selectedGame = i-1
             i = i + 1
+
+    if selectedGame >= 0 and selectedTab == 0:
+        image = pygame.image.load('Images/Arrow.png')
+        display.blit(image, (displaySize[0]-130, displaySize[1]-74))
+
+    if selectedTab == 0 and mouseClicked and oldGame == selectedGame:
+        selectedGame = -1
+        oldGame = -1
+
+    oldGame = selectedGame
+
+    currentInput = inputField(events, currentInput)
+
+    renderText((94, 255, 34), 'Ariel', ((i * 190)-100, 420), 35, currentInput, display)
     
     pygame.display.update()
 
