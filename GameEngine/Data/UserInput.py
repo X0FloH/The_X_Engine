@@ -141,7 +141,7 @@ def keysPressed(events, special=True):
     return pressed
 
 def inputField(events, current, special=True):
-    for key in keysPressed(events):
+    for key in keysPressed(events, special):
         if not contains("Ctrl", keysPressed(events, special)) and not contains("Shift", keysPressed(events, special)) and not contains("Alt", keysPressed(events, special)) and not contains("Del", keysPressed(events, special)):
             current += key
         if contains("Shift", keysPressed(events, special)):

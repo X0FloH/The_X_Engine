@@ -21,9 +21,12 @@ selectedTab = 0
 selectedGame = -1
 oldGame = -1
 
+selectedInput = -1
+
 #Declare the lists
 tabs = [["Open", 100, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["About", 300, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel'], ["Create", 500, 50, 100, 100, [False, (255, 0, 0)], (231, 47, 46), 50, 'Ariel']]
 folders = ["Saves"]
+inputs = ["", ""]
 
 #Setup Folders
 for folder in folders:
@@ -48,7 +51,6 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
-            break
 
     #Clear the screen
     display.fill(backgroundCol)
@@ -101,11 +103,43 @@ while running:
         selectedGame = -1
         oldGame = -1
 
+    if selectedTab == 2:
+        if selectedInput == 0:
+            renderText((255, 84, 92), 'Ariel', (100, 200), 50, "Name", display)
+        elif not selectedInput == 0:
+            renderText((84, 84, 92), 'Ariel', (100, 200), 50, "Name", display)
+        if clickedRect(mousePos[0], mousePos[1], mouseClicked, 100, 250, 1000, 50):
+            selectedInput = 0
+        if selectedInput == 1:
+            renderText((255, 84, 92), 'Ariel', (100, 400), 50, "Description", display)
+        elif not selectedInput == 1:
+            renderText((84, 84, 92),'Ariel', (100, 400), 50, "Description", display)
+        if clickedRect(mousePos[0], mousePos[1], mouseClicked, 100, 450, 1000, 50):
+            selectedInput = 1
+        if selectedInput == 0:
+            inputs[0] = inputField(events, inputs[0], False)
+        if selectedInput == 1:
+            inputs[1] = inputField(events, inputs[1], True)
+        renderText((255, 255, 255), 'Ariel', (100, 250), 35, inputs[0], display)
+        renderText((255, 255, 255), 'Ariel', (100, 450), 35, inputs[1], display)
+
+        if not inputs[0] == "":
+            tick = pygame.image.load("Images/Tick.png")
+            display.blit(tick, (210, 200))
+        if not inputs[1] == "":
+            tick = pygame.image.load("Images/Tick.png")
+            display.blit(tick, (305, 400))
+
+        if not inputs[0] == "" and not inputs[1] == "":
+            image = pygame.image.load('Images/Arrow.png')
+            display.blit(image, (displaySize[0]-130, displaySize[1]-74))
+
+
     oldGame = selectedGame
 
-    currentInput = inputField(events, currentInput)
-
-    renderText((94, 255, 34), 'Ariel', ((i * 190)-100, 420), 35, currentInput, display)
+    #How to do inputs:
+    #currentInput = inputField(events, currentInput)
+    #renderText((94, 255, 34), 'Ariel', ((i * 190)-100, 420), 35, currentInput, display)
     
     pygame.display.update()
 
