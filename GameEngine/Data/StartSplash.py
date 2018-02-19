@@ -1,4 +1,16 @@
 import os
+from sys import platform
+
+try:
+    import pygame
+except:
+    if platform == "linux" or platform == "linux2":
+        os.system('sudo pip install pygame')
+    elif platform == "darwin":
+        os.system('pip3 install pygame')
+    elif platform == "win32":
+        os.system('pip install pygame')
+
 import pygame
 from time import *
 
