@@ -120,7 +120,9 @@ while running:
             inputs[0] = inputField(events, inputs[0], False)
         if selectedInput == 1:
             inputs[1] = inputField(events, inputs[1], True)
+        inputs[0] = inputs[0][:12]
         renderText((255, 255, 255), 'Ariel', (100, 250), 35, inputs[0], display)
+        renderText((255, 255, 255), 'Ariel', (300, 250), 25, str(12-len(inputs[0])), display)
         renderText((255, 255, 255), 'Ariel', (100, 450), 35, inputs[1], display)
 
         if not inputs[0] == "":

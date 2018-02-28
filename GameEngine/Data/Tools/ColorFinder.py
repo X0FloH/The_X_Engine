@@ -1,7 +1,6 @@
 import pygame
 import os
 from time import *
-import pyperclip
 
 displaySize = (1000, 900)
 backgroundColor = (0, 0, 0)
@@ -74,7 +73,6 @@ while running:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_p] or keys[pygame.K_RETURN]:
         string = "(" + str(currentColor[0]) + ", " + str(currentColor[1]) + ", " + str(currentColor[2]) + ")"
-        pyperclip.copy(string)
 
         wait(.1)
         
