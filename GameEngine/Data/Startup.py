@@ -98,6 +98,8 @@ while running:
     if selectedGame >= 0 and selectedTab == 0:
         image = pygame.image.load('Images/Arrow.png')
         display.blit(image, (displaySize[0]-130, displaySize[1]-74))
+        renderText((255, 0, 255), 'Ariel', (100, 500), 40, "Description", display)
+        renderText((255, 255, 255), 'Ariel', (100,550), 35, readFile("Saves/" + displayGames()[selectedGame] + "/desc.txt", "File"), display)
 
     if selectedTab == 0 and mouseClicked and oldGame == selectedGame:
         selectedGame = -1
@@ -125,16 +127,22 @@ while running:
         renderText((255, 255, 255), 'Ariel', (300, 250), 25, str(12-len(inputs[0])), display)
         renderText((255, 255, 255), 'Ariel', (100, 450), 35, inputs[1], display)
 
-        if not inputs[0] == "":
+        if os.path.exists("Saves/" + inputs[0]) and not inputs[0] == "":
+            renderText((255, 0, 0), 'Ariel', (300, 200), 35, "There is already a file named this.", display)
+
+        if not inputs[0] == "" and not os.path.exists("Saves/" + inputs[0]):
             tick = pygame.image.load("Images/Tick.png")
             display.blit(tick, (210, 200))
         if not inputs[1] == "":
             tick = pygame.image.load("Images/Tick.png")
             display.blit(tick, (305, 400))
 
-        if not inputs[0] == "" and not inputs[1] == "":
+        if not inputs[0] == "" and not inputs[1] == "" and not os.path.exists("Saves/" + inputs[0]):
             image = pygame.image.load('Images/Arrow.png')
             display.blit(image, (displaySize[0]-130, displaySize[1]-74))
+            if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74):
+                os.makedirs("Saves/" + inputs[0])
+                writeFile("Saves/" + inputs[0] + "/desc.txt", inputs[1])
 
 
     oldGame = selectedGame
