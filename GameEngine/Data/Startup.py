@@ -1,6 +1,14 @@
 import pygame
+import shutil
 import os
 from time import *
+import webbrowser
+
+hasClip = True
+try:
+    import pyperclip
+except:
+    hasClip = False
 
 #Import all the scripts
 from Render import *
@@ -16,6 +24,9 @@ mouseClicked = False
 mouseHasClicked = False
 running = True
 currentInput = ""
+
+copyClipPos = [1100, 850]
+showClip = False
 
 selectedTab = 0
 selectedGame = -1
@@ -39,6 +50,10 @@ pygame.init()
 pygame.display.set_caption("X Engine Launcher 0.5")
 display = pygame.display.set_mode(displaySize)
 
+#Load the logo
+logo = pygame.image.load('Images/Logo/32bit.png')
+pygame.display.set_icon(logo)
+
 #To not worry about sleep
 def wait(time):
     sleep(time)
@@ -51,6 +66,9 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
 
     #Clear the screen
     display.fill(backgroundCol)
@@ -95,15 +113,72 @@ while running:
                 selectedGame = i-1
             i = i + 1
 
+    #The about page
+    if selectedTab == 1:
+        renderText((255, 255, 255), 'Ariel', (100, 700), 30, 'Contact:', display)
+        renderText((184, 0, 149), 'Ariel', (190, 700), 30, 'xengine.contact@gmail.com', display)
+        if clickedRect(mousePos[0], mousePos[1], mouseClicked, 190, 700, 300, 25) and hasClip:
+            pyperclip.copy('xengine.contact@gmail.com')
+            showClip = True
+        renderText((255, 255, 255), 'Ariel', (100, 750), 30, 'Report Bugs:', display)
+        renderText((184, 0, 149), 'Ariel', (240, 750), 30, 'xengine.bugs@gmail.com', display)
+        if clickedRect(mousePos[0], mousePos[1], mouseClicked, 240, 750, 300, 25) and hasClip:
+            pyperclip.copy('xengine.bugs@gmail.com')
+            showClip = True
+
+        twitter = pygame.image.load('Images/Social/twitter.png').convert_alpha()
+        display.blit(twitter, (700, 700))
+        if clickedRect(mousePos[0], mousePos[1], mouseClicked, 700, 700, 64, 64):
+            webbrowser.open('https://twitter.com/X0FloH')
+        if hoveredRect(mousePos[0], mousePos[1], 700, 700, 64, 64):
+            renderText((0, 0, 255), 'Ariel', (700, 764), 20, "@X0FloH", display)
+            
+        renderText((255, 255, 255), 'Ariel', (100, 150), 35, "The X Engine was created by an 11 year-old indie game developer.", display)
+        renderText((255, 255, 255), 'Ariel', (100, 190), 35, "I was creating a game for the YGBs (Young Game Baftas) and I created a physics engine for my game.", display)
+        renderText((255, 255, 255), 'Ariel', (100, 230), 35, "this made me think about how engines like Unity an Unreal Engine 4 had their own physics engine", display)
+        renderText((255, 255, 255), 'Ariel', (100, 270), 35, "and I decided to make my own.", display)
+        renderText((255, 255, 255), 'Ariel', (100, 350), 35, "I knew how to do basic pygame things in python and so I designed a 2D engine", display)
+        renderText((255, 255, 255), 'Ariel', (100, 390), 35, "which had visual scripting and when you exported the game it made it into a python file.", display)
+
+        me = pygame.image.load('Images/me.png')
+        display.blit(me, ((displaySize[0]/2)-128, 430))
+
+        renderText((255, 0, 37), 'Ariel', ((displaySize[0]/2)-128-40, 430+171+10), 25, "Oscar Jones - Developer", display)
+
     if selectedGame >= 0 and selectedTab == 0:
         image = pygame.image.load('Images/Arrow.png')
         display.blit(image, (displaySize[0]-130, displaySize[1]-74))
+        if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74):
+            writeFile("Saves/" + displayGames()[selectedGame] + "/using.txt", "True", "w")
+            os.system('start cmd /D /C "python Engine.py && pause"')
+            running = False
         renderText((255, 0, 255), 'Ariel', (100, 500), 40, "Description", display)
         renderText((255, 255, 255), 'Ariel', (100,550), 35, readFile("Saves/" + displayGames()[selectedGame] + "/desc.txt", "File"), display)
 
     if selectedTab == 0 and mouseClicked and oldGame == selectedGame:
         selectedGame = -1
         oldGame = -1
+
+    for event in events:
+        if event.type == pygame.KEYDOWN:
+            if selectedTab == 0 and selectedGame >= 0 and event.key == pygame.K_DELETE:
+                ask = True
+                while ask:
+                    renderText((255, 0, 0), 'Ariel', (300, 450), 60, "Are you sure you want to delete this? (y/n)",display)
+                    pygame.display.update()
+                    events2 = pygame.event.get()
+                    for event2 in events2:
+                        if event2.type == pygame.KEYDOWN:
+                            if event2.key == pygame.K_y:
+                                shutil.rmtree("Saves/" + displayGames()[selectedGame])
+                                selectedGame = -1
+                                ask = False
+                            if event2.key == pygame.K_n:
+                                ask = False
+            if selectedTab == 2 and selectedInput == 0 and event.key == pygame.K_TAB:
+                selectedInput = 1
+            elif selectedTab == 2 and selectedInput == 1 and event.key == pygame.K_TAB:
+                selectedInput = 0
 
     if selectedTab == 2:
         if selectedInput == 0:
@@ -140,9 +215,25 @@ while running:
         if not inputs[0] == "" and not inputs[1] == "" and not os.path.exists("Saves/" + inputs[0]):
             image = pygame.image.load('Images/Arrow.png')
             display.blit(image, (displaySize[0]-130, displaySize[1]-74))
-            if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74):
-                os.makedirs("Saves/" + inputs[0])
-                writeFile("Saves/" + inputs[0] + "/desc.txt", inputs[1])
+            for event in events:
+                if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74) or (event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN):
+                    os.makedirs("Saves/" + inputs[0])
+                    writeFile("Saves/" + inputs[0] + "/desc.txt", inputs[1])
+                    writeFile("Saves/" + inputs[0] + "/using.txt", "False")
+                    selectedTab = 0
+                    selectedGame = getIndex(inputs[0], displayGames())
+                    inputs[0] = ""
+                    inputs[1] = ""
+
+    if showClip:
+        newDisp = pygame.Surface((350, 50)).convert_alpha()
+        newDisp.fill((0, 0, 0, 0), None, pygame.BLEND_RGBA_MULT)
+        renderText((0, 0, 255), 'Ariel', (0, 0), 35, 'Copied To Clip Board', newDisp)
+        display.blit(newDisp, (copyClipPos[0], copyClipPos[1]))
+        if copyClipPos[1] < 35:
+            copyClipPos[1] = 850
+            showClip = False
+        copyClipPos[1] -= 1.5
 
 
     oldGame = selectedGame

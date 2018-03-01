@@ -22,6 +22,10 @@ pygame.init()
 pygame.display.set_caption("X Engine V0.5 BETA Build")
 display = pygame.display.set_mode(displaySize)
 
+logo = pygame.image.load('Images/Logo/32bit.png')
+logoBig = pygame.image.load('Images/Logo/128bit.png')
+pygame.display.set_icon(logo)
+
 currentLoad = 0
 loadTimes = 2
 currentTime = 0
@@ -60,6 +64,8 @@ while running:
     if currentTime == loadTimes:
         os.system('start cmd /D /C "python Startup.py && pause"')
         break
+
+    display.blit(logoBig, ((displaySize[0]/2)-80, (displaySize[1]/2)-128))
 
     pygame.display.update()
 

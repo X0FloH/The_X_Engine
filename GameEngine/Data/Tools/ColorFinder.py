@@ -2,6 +2,8 @@ import pygame
 import os
 from time import *
 
+from Render import *
+
 displaySize = (1000, 900)
 backgroundColor = (0, 0, 0)
 
@@ -100,6 +102,8 @@ while running:
                 slider[0] = minSliderVal
             if slider[0] > maxSliderVal:
                 slider[0] = maxSliderVal
+
+    renderText((255, 255, 255), 'Ariel', (300, 800), 35, str(currentColor), display)
 
 
     pygame.display.update()

@@ -1,5 +1,8 @@
 import os
 
+def magInverse(num):
+    return 1-num
+
 def getIndex(find, lst):
     i = 0
     while i < len(lst):
@@ -23,9 +26,9 @@ def makeFile(path):
     file = open(path, 'a+')
     file.close()
 
-def writeFile(path, text):
+def writeFile(path, text, mode='r+'):
     makeFile(path)
-    file = open(path, 'r+')
+    file = open(path, mode)
     file.write(text)
     file.close()
 

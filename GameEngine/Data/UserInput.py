@@ -7,6 +7,12 @@ def clickedRect(mouseX, mouseY, mouseClick, xPos, yPos, xSize, ySize):
     else:
         return False
 
+def hoveredRect(mouseX, mouseY, xPos, yPos, xSize, ySize):
+    if mouseX > xPos and mouseX < xPos + xSize and mouseY > yPos and mouseY < yPos + ySize:
+        return True
+    else:
+        return False
+
 def keysPressed(events, special=True):
     pressed = []
     for event in events:
