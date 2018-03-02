@@ -218,6 +218,7 @@ while running:
             for event in events:
                 if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74) or (event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN):
                     os.makedirs("Saves/" + inputs[0])
+                    os.makedirs("Saves/" + inputs[0] + "/Objects")
                     writeFile("Saves/" + inputs[0] + "/desc.txt", inputs[1])
                     writeFile("Saves/" + inputs[0] + "/using.txt", "False")
                     selectedTab = 0
