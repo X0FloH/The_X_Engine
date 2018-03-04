@@ -9,6 +9,7 @@ import webbrowser
 from Render import *
 from UserInput import *
 from Data import *
+from Sensing import *
 
 #Find the one we are using
 using = ""
@@ -23,9 +24,14 @@ editX = 0
 editY = 0
 editMSPos = [0, 0]
 
+#Engine variables
+gameSpeed = 1
+
 #The mouse variables
 mouseDown = False
 mouseRightDown = False
+mouseRightClicked = False
+mouseRightHasClicked = False
 mouseClicked = False
 mouseHasClicked = False
 
@@ -53,6 +59,7 @@ pygame.display.set_icon(logo)
 #Start the loop
 running = True
 while running and not using == "":
+    sleep(magInverse(gameSpeed)*100)
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
@@ -86,6 +93,14 @@ while running and not using == "":
     if not mouseDown:
         mouseClicked = False
         mouseHasClicked = False
+    if mouseRightDown and mouseRightHasClicked and mouseRightClicked:
+        mouseRightClicked = False
+    if mouseRightDown and not mouseRightHasClicked:
+        mouseRightClicked = True
+        mouseRightHasClicked = True
+    if not mouseRightDown:
+        mouseRightClicked = False
+        mouseRightHasClicked = False
 
     #Empty the screen
     display.fill((0, 0, 0))
@@ -94,12 +109,14 @@ while running and not using == "":
     objectsPlace = pygame.Surface((displaySize[0]-400, displaySize[1]-80))
     for obj in os.listdir("Saves/" + using + "/Objects"):
         if readFile("Saves/" + using + "/Objects/" + obj)[0] == "square\n":
-            if obj == selectedObject:
-                renderRect((255, 140,0), (int(readFile("Saves/" + using + "/Objects/" + obj)[4])-5+editX,int(readFile("Saves/" + using + "/Objects/" + obj)[5])-5+editY), (int(readFile("Saves/" + using + "/Objects/" + obj)[6])+10,int(readFile("Saves/" + using + "/Objects/" + obj)[7])+10),objectsPlace)
-            renderRect((int(readFile("Saves/" + using + "/Objects/" + obj)[1]),int(readFile("Saves/" + using + "/Objects/" + obj)[2]),int(readFile("Saves/" + using + "/Objects/" + obj)[3])), (int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX,int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY), (int(readFile("Saves/" + using + "/Objects/" + obj)[6]),int(readFile("Saves/" + using + "/Objects/" + obj)[7])), objectsPlace)
-            if clickedRect(mousePos[0], mousePos[1]-80, mouseClicked, int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX, int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY, int(readFile("Saves/" + using + "/Objects/" + obj)[6]), int(readFile("Saves/" + using + "/Objects/" + obj)[7])):
-                selectedObject = obj
-                clickedObject = True
+            if inWindow(displaySize[0]-400, displaySize[1]-80, int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX,  int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY, int(readFile("Saves/" + using + "/Objects/" + obj)[6]), int(readFile("Saves/" + using + "/Objects/" + obj)[7])):
+                if obj == selectedObject:
+                    renderRect((255, 140,0), (int(readFile("Saves/" + using + "/Objects/" + obj)[4])-5+editX,int(readFile("Saves/" + using + "/Objects/" + obj)[5])-5+editY), (int(readFile("Saves/" + using + "/Objects/" + obj)[6])+10,int(readFile("Saves/" + using + "/Objects/" + obj)[7])+10),objectsPlace)
+
+                renderRect((int(readFile("Saves/" + using + "/Objects/" + obj)[1]),int(readFile("Saves/" + using + "/Objects/" + obj)[2]),int(readFile("Saves/" + using + "/Objects/" + obj)[3])), (int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX,int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY), (int(readFile("Saves/" + using + "/Objects/" + obj)[6]),int(readFile("Saves/" + using + "/Objects/" + obj)[7])), objectsPlace)
+                if clickedRect(mousePos[0], mousePos[1]-80, mouseClicked, int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX, int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY, int(readFile("Saves/" + using + "/Objects/" + obj)[6]), int(readFile("Saves/" + using + "/Objects/" + obj)[7])):
+                    selectedObject = obj
+                    clickedObject = True
         if readFile("Saves/" + using + "/Objects/" + obj)[0] == "circle\n":
             renderCircle((int(readFile("Saves/" + using + "/Objects/" + obj)[1]),int(readFile("Saves/" + using + "/Objects/" + obj)[2]),int(readFile("Saves/" + using + "/Objects/" + obj)[3])), (int(readFile("Saves/" + using + "/Objects/" + obj)[4]),int(readFile("Saves/" + using + "/Objects/" + obj)[5])), int(readFile("Saves/" + using + "/Objects/" + obj)[6]), objectsPlace)
         
@@ -141,19 +158,26 @@ while running and not using == "":
         square = pygame.image.load('Images/Icons/Create/Square.png')
         renderText((255, 0, 0), 'Ariel', (30 + 32 + 20, (30 + (32/2))-(25/2)), 25, "Square", menuPlace)
         if clickedRect(mousePos[0], mousePos[1], mouseClicked, 0, 20+32+20, 150, 75):
-            writeFile("Saves/" + using + "/Objects/square" + str(len(os.listdir("Saves/" + using + "/Objects"))+1) + ".txt", "square\n255\n255\n255\n" + str(random.randrange(0, displaySize[0]-350)) + "\n" + str(random.randrange(0, displaySize[0]-80)) + "\n50\n50", "w")
+            writeFile("Saves/" + using + "/Objects/square" + str(len(os.listdir("Saves/" + using + "/Objects"))+1) + ".txt", "square\n255\n255\n255\n" + str(random.randrange(0, displaySize[0]-350)-editX) + "\n" + str(random.randrange(0, displaySize[1]-80)-editY) + "\n50\n50", "w")
         menuPlace.blit(square, (30, 30))
         renderRect((60, 60, 60), (0, 75), (150, 10), menuPlace)
         square = pygame.image.load('Images/Icons/Create/Circle.png')
         renderText((255, 0, 0), 'Ariel', (30 + 32 + 20, (100 + (32/2))-(25/2)), 25, "Circle", menuPlace)
         if clickedRect(mousePos[0], mousePos[1], mouseClicked, 0, 20+32+20+85, 150, 115):
-            writeFile("Saves/" + using + "/Objects/circle" + str(len(os.listdir("Saves/" + using + "/Objects"))+1) + ".txt", "circle\n255\n255\n255\n" + str(random.randrange(0, displaySize[0]-350)) + "\n" + str(random.randrange(0, displaySize[0]-80)) + "\n50\n50", "w")
+            writeFile("Saves/" + using + "/Objects/circle" + str(len(os.listdir("Saves/" + using + "/Objects"))+1) + ".txt", "circle\n255\n255\n255\n" + str(random.randrange(0, displaySize[0]-350)-editX) + "\n" + str(random.randrange(0, displaySize[1]-80)-editY) + "\n50\n50", "w")
         menuPlace.blit(square, (30, 100))
         display.blit(menuPlace, (60, 20+32+20))
 
+    #Delete the selected object when Del or backspace is clicked
+    for event in events:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DELETE or event.key == pygame.K_BACKSPACE:
+                if not selectedObject == "":
+                    os.remove("Saves/" + using + "/Objects/" + selectedObject)
+
     #Drag the editorCam
-    if mouseDown and selectedObject == "" and not createMenu:
-        if mouseClicked:
+    if mouseRightDown and not createMenu:
+        if mouseRightClicked:
             editMSPos[0] = mousePos[0]
             editMSPos[1] = mousePos[1]
         editX += mousePos[0]-editMSPos[0]
