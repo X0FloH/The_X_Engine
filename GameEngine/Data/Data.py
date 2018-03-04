@@ -40,3 +40,10 @@ def readFile(path, mode="Lines"):
     if mode == "File":
         fileText = file.read()
         return fileText
+
+def writeFileLines(path, text, line):
+    lines = readFile(path)
+    lines[line] = text+"\n"
+    file = open(path, 'w')
+    file.writelines(lines)
+    file.close()

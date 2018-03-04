@@ -37,6 +37,8 @@ mouseHasClicked = False
 
 #Some default variables
 backgroundCol = (0, 0, 0)
+
+surface = pygame.display.get_surface()
 displaySize = (1500, 900)
 
 #Some menu variables
@@ -46,7 +48,12 @@ currentAction = 0
 
 #Object variables
 clickedObject = False
+doingAction = False
 selectedObject = "square3.txt"
+
+#Action Variables
+moveMSPos = [0, 0]
+selectedXMove = False
 
 #Setup Pygame
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -61,7 +68,10 @@ pygame.display.set_icon(logo)
 #Start the loop
 running = True
 while running and not using == "":
+    #Add the delay
     sleep(magInverse(gameSpeed))
+
+    #Check for quiting
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
@@ -108,25 +118,47 @@ while running and not using == "":
     display.fill((0, 0, 0))
 
     #Draw all the objects
-    objectsPlace = pygame.Surface((displaySize[0]-400, displaySize[1]-80))
+    objectsPlace = pygame.Surface((displaySize[0]-350, displaySize[1]-80))
     for obj in os.listdir("Saves/" + using + "/Objects"):
         if readFile("Saves/" + using + "/Objects/" + obj)[0] == "square\n":
-            if inWindow(displaySize[0]-400, displaySize[1]-80, int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX,  int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY, int(readFile("Saves/" + using + "/Objects/" + obj)[6]), int(readFile("Saves/" + using + "/Objects/" + obj)[7])):
+            if inWindow(displaySize[0]-350, displaySize[1]-80, int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX,  int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY, int(readFile("Saves/" + using + "/Objects/" + obj)[6]), int(readFile("Saves/" + using + "/Objects/" + obj)[7])):
                 if obj == selectedObject:
                     renderRect((255, 140,0), (int(readFile("Saves/" + using + "/Objects/" + obj)[4])-5+editX,int(readFile("Saves/" + using + "/Objects/" + obj)[5])-5+editY), (int(readFile("Saves/" + using + "/Objects/" + obj)[6])+10,int(readFile("Saves/" + using + "/Objects/" + obj)[7])+10),objectsPlace)
 
                 renderRect((int(readFile("Saves/" + using + "/Objects/" + obj)[1]),int(readFile("Saves/" + using + "/Objects/" + obj)[2]),int(readFile("Saves/" + using + "/Objects/" + obj)[3])), (int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX,int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY), (int(readFile("Saves/" + using + "/Objects/" + obj)[6]),int(readFile("Saves/" + using + "/Objects/" + obj)[7])), objectsPlace)
+
+                if currentAction == 0 and selectedObject == obj:
+                    renderRect((0, 0, 255), (int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX+(int(int(readFile("Saves/" + using + "/Objects/" + obj)[6])/2)), (int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY-10+(int(int(readFile("Saves/" + using + "/Objects/" + obj)[7])/2)))), (int(readFile("Saves/" + using + "/Objects/" + obj)[6])*2, 20), objectsPlace)
+                    if (mouseDown and hoveredRect(mousePos[0], mousePos[1], int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX+(int(int(readFile("Saves/" + using + "/Objects/" + obj)[6])/2)), int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY+(int(int(readFile("Saves/" + using + "/Objects/" + obj)[7]))/2), int(readFile("Saves/" + using + "/Objects/" + obj)[6])*2, 20)) or selectedXMove:
+                        doingAction = True
+                        if mouseClicked:
+                            moveMSPos[0] = mousePos[0]
+                            moveMSPos[1] = mousePos[1]
+                        writeFileLines("Saves/"+ using + "/Objects/" + obj, str(int(readFile("Saves/" + using + "/Objects/" + obj)[4]) + mousePos[0]-moveMSPos[0]), 4)
+                        moveMSPos[0] = mousePos[0]
+                        moveMSPos[1] = mousePos[1]
+                        selectedXMove = True
+                    else:
+                        doingAction = False
+
                 if clickedRect(mousePos[0], mousePos[1]-80, mouseClicked, int(readFile("Saves/" + using + "/Objects/" + obj)[4])+editX, int(readFile("Saves/" + using + "/Objects/" + obj)[5])+editY, int(readFile("Saves/" + using + "/Objects/" + obj)[6]), int(readFile("Saves/" + using + "/Objects/" + obj)[7])):
                     selectedObject = obj
                     clickedObject = True
+
         if readFile("Saves/" + using + "/Objects/" + obj)[0] == "circle\n":
             renderCircle((int(readFile("Saves/" + using + "/Objects/" + obj)[1]),int(readFile("Saves/" + using + "/Objects/" + obj)[2]),int(readFile("Saves/" + using + "/Objects/" + obj)[3])), (int(readFile("Saves/" + using + "/Objects/" + obj)[4]),int(readFile("Saves/" + using + "/Objects/" + obj)[5])), int(readFile("Saves/" + using + "/Objects/" + obj)[6]), objectsPlace)
         
+    
+
 
     #Empty selection
-    if mouseClicked and not clickedObject:
+    if mouseClicked and not clickedObject and not doingAction:
         selectedObject = ""
     clickedObject = False
+
+    #Stop X Moving
+    if selectedXMove and mouseDown == False:
+        selectedXMove = False
 
     #Render the objectsPlace
     display.blit(objectsPlace, (0, 80))

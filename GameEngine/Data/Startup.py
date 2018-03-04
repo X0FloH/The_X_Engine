@@ -144,11 +144,12 @@ while running:
         display.blit(me, ((displaySize[0]/2)-128, 430))
 
         renderText((255, 0, 37), 'Ariel', ((displaySize[0]/2)-128-40, 430+171+10), 25, "Oscar Jones - Developer", display)
-
-    if selectedGame >= 0 and selectedTab == 0:
+        
+    if (selectedGame >= 0 and selectedTab == 0):
         image = pygame.image.load('Images/Arrow.png')
         display.blit(image, (displaySize[0]-130, displaySize[1]-74))
-        if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74):
+        keys = pygame.key.get_pressed()
+        if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74) or keys[pygame.K_RETURN]:
             writeFile("Saves/" + displayGames()[selectedGame] + "/using.txt", "True", "w")
             os.system('start cmd /D /C "python Engine.py && pause"')
             running = False
