@@ -42,6 +42,8 @@ displaySize = (1500, 900)
 #Some menu variables
 createMenu = False
 
+currentAction = 0
+
 #Object variables
 clickedObject = False
 selectedObject = "square3.txt"
@@ -59,7 +61,7 @@ pygame.display.set_icon(logo)
 #Start the loop
 running = True
 while running and not using == "":
-    sleep(magInverse(gameSpeed)*100)
+    sleep(magInverse(gameSpeed))
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
@@ -138,6 +140,11 @@ while running and not using == "":
     if clickedRect(mousePos[0], mousePos[1], mouseClicked, 60, 20, 32, 32):
         createMenu = True
     iconPlace.blit(new, (60, 20))
+    #Draw the Actions
+    position = pygame.image.load("Images/Icons/Actions/PosArrows.png")
+    if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-350-(36*3)-10, 20, 32, 32):
+        currentAction = 0
+    iconPlace.blit(position, (displaySize[0]-350-(36*3)-10, 20))
 
     #Draw the inspector panel
     inspector = pygame.Surface((350, displaySize[1]))
