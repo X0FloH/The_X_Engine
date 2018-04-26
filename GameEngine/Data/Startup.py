@@ -17,7 +17,7 @@ from Data import *
 
 #Declare the variables
 backgroundCol = (0, 0, 0)
-displaySize = (1500, 900)
+displaySize = (1000, 700)
 mouseDown = False
 mouseRightDown = False
 mouseClicked = False

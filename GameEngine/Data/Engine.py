@@ -39,7 +39,7 @@ mouseHasClicked = False
 backgroundCol = (0, 0, 0)
 
 surface = pygame.display.get_surface()
-displaySize = (1500, 900)
+displaySize = (1000, 700)
 
 #Some menu variables
 createMenu = False
