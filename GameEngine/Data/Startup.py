@@ -152,6 +152,8 @@ while running:
         if clickedRect(mousePos[0], mousePos[1], mouseClicked, displaySize[0]-130, displaySize[1]-74, 130, 74) or keys[pygame.K_RETURN]:
             writeFile("Saves/" + displayGames()[selectedGame] + "/using.txt", "True", "w")
             os.system('start cmd /D /C "python Engine.py && pause"')
+            file = open("Engine.py", "r+")
+            exec(file.read())
             running = False
         renderText((255, 0, 255), 'Ariel', (100, 500), 40, "Description", display)
         renderText((255, 255, 255), 'Ariel', (100,550), 35, readFile("Saves/" + displayGames()[selectedGame] + "/desc.txt", "File"), display)
